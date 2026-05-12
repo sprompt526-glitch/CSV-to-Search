@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CSV Search System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="page-title">🔍 CSV Search System</div>
+
+    <!-- 🔍 Search Form -->
+    <form method="POST" class="search-bar">
+        <input type="text" name="complaint_no" placeholder="Complaint No" value="{{ complaint_no }}">
+        <input type="text" name="customer_name" placeholder="Customer Name" value="{{ customer_name }}">
+        <input type="hidden" name="page" value="1">
+        <button type="submit">Search</button>
+    </form>
+
+    {% if message %}
+        <p class="message">{{ message }}</p>
+    {% endif %}
+
+    {% if results %}
+
+        <div class="count">
+            Showing {{ results|length }} record{{ 's' if results|length != 1 else '' }}
+        </div>
+
+        <!-- 📊 Table -->
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        {% for head in headers %}
+                            <th>{{ head }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for row in results %}
+                    <tr>
+                        {% for head in headers %}
+                            <td>{{ row.get(head, "") }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 🔄 Pagination -->
+        <form method="POST" class="pagination">
+            <input type="hidden" name="complaint_no" value="{{ complaint_no }}">
+            <input type="hidden" name="customer_name" value="{{ customer_name }}">
+
+            {% if page > 1 %}
+                <button type="submit" name="page" value="{{ page - 1 }}" class="btn-page">⬅ Previous</button>
+            {% endif %}
+
+            <span class="page-info">Page {{ page }}</span>
+
+            {% if (page * 10) < total %}
+                <button type="submit" name="page" value="{{ page + 1 }}" class="btn-page">Next ➡</button>
+            {% endif %}
+        </form>
+
+    {% endif %}
+
+</div>
+
+</body>
+<footer class="footer">
+    <p>© 2026 CSV Search System | Developed by Nitin Makwana| Using Flask</p>
+</footer>
+</html>
